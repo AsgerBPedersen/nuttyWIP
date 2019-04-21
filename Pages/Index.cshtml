@@ -1,0 +1,60 @@
+﻿@page 
+@model IndexModel
+@using WebApplication1.Models
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <table>
+        <tr>
+            <th>name</th>
+            <th>calories</th>
+            <th>amount</th>
+        </tr>
+        @if (!(Model.DailyIntake is null))
+        {
+            foreach (var item in Model.DailyIntake.FoodItems)
+            {
+                <tr>
+                    <th>@Html.DisplayFor(modelItem => item.label)</th>
+                    <th>@Html.DisplayFor(modelItem => item.nutrients.ENERC_KCAL)</th>
+                    <th>@Html.DisplayFor(modelItem => item.amount)</th>
+                </tr>
+            }
+            <tr>
+                <th></th>
+                <th>@Model.DailyIntake.FoodItems.Sum(f => f.nutrients.ENERC_KCAL * (f.amount/100))</th>
+                <th></th>
+            </tr>
+        }
+    </table>
+
+    <form>
+        <input type="text" asp-for="SearchString" />
+        <input type="submit" value="Search" />
+    </form>
+    @if (!(Model.FoodInfo is null))
+    {
+        if (!(Model.FoodInfo.hints is null))
+        {
+            foreach (Hint item in Model.FoodInfo.hints)
+            {
+                <h2>@item.food.label</h2>
+                <p>Calories: @item.food.nutrients.ENERC_KCAL</p>
+                <p>Carbohydrates: @item.food.nutrients.CHOCDF</p>
+                <p>Protein: @item.food.nutrients.PROCNT</p>
+                <p>Fat: @item.food.nutrients.FAT</p>
+                <form method="post">
+                    <input type="hidden" value="@item.food.label" asp-for="FoodName" />
+                    <label>Grams:</label>
+                    <input type="number" name="amount" />
+                    <input type="submit" value="Add" />
+                </form>
+            }
+
+        }
+    }
+</div>
